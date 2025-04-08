@@ -41,10 +41,6 @@ public class SysOpsDB extends SQLiteOpenHelper {
         openDatabase();
     }
 
-    private boolean checkDatabaseExists() {
-        File dbFile = new File(dbPath);
-        return dbFile.exists();
-    }
 
     private void copyDatabaseFromAssets() {
         try {
@@ -94,36 +90,6 @@ public class SysOpsDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("databases_info", "database_name = ?", new String[]{databaseName});
     }
-
-
-
-    public List<String> getDatabasesInfo() {
-        List<String> databasesInfo = new ArrayList<>();
-        Cursor cursor = db.rawQuery("SELECT * FROM databases_info", null);
-        if (cursor.moveToFirst()) {
-            do {
-                String databaseInfo = "ID: " + cursor.getInt(0) + ", Name: " + cursor.getString(1)
-                        + ", Path: " + cursor.getString(2) + ", Interior Path: " + cursor.getString(3);
-                databasesInfo.add(databaseInfo);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return databasesInfo;
-    }
-
-
-    public List<String> getTableNames() {
-        List<String> tableNames = new ArrayList<>();
-        Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table';", null);
-        if (cursor.moveToFirst()) {
-            do {
-                tableNames.add(cursor.getString(0));
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return tableNames;
-    }
-
 
 
     public boolean isDatabaseInitialized() {
@@ -182,106 +148,3 @@ public class SysOpsDB extends SQLiteOpenHelper {
     }
 }
 
-
-/*public class SysOpsDB extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "sysops.db";
-    private static final int DATABASE_VERSION = 1;
-
-    private final Context mContext;
-    private SQLiteDatabase db;
-    private final String customDbPath;
-
-    public SysOpsDB(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.mContext = context;
-        this.customDbPath = getDatabasePath();
-    }
-
-    private String getDatabasePath() {
-        File dbDir = new File(mContext.getFilesDir(), "databases/sysops");
-        if (!dbDir.exists()) {
-            dbDir.mkdirs();
-        }
-        return dbDir.getAbsolutePath() + "/" + DATABASE_NAME;
-    }
-
-    private void copyDataBase() throws IOException {
-        Log.d("DatabaseHelper", "Copying database from assets");
-        InputStream mInput = mContext.getAssets().open("databases/sysops/" + DATABASE_NAME);
-        String outFileName = customDbPath;
-        OutputStream mOutput = new FileOutputStream(outFileName);
-        byte[] mBuffer = new byte[1024];
-        int mLength;
-        while ((mLength = mInput.read(mBuffer)) > 0) {
-            mOutput.write(mBuffer, 0, mLength);
-        }
-        mOutput.flush();
-        mOutput.close();
-        mInput.close();
-    }
-
-    public void createDataBase() throws IOException {
-        boolean dbExist = checkDataBase();
-        if (!dbExist) {
-            this.getReadableDatabase().close(); // 빈 데이터베이스 생성 (SQLiteOpenHelper)
-            try {
-                copyDataBase(); // assets에서 복사
-            } catch (IOException e) {
-                Log.e("DatabaseHelper", "Error copying database", e);
-                throw new Error("Error copying database");
-            }
-        } else {
-            Log.d("DatabaseHelper", "Database already exists");
-        }
-    }
-
-    private boolean checkDataBase() {
-        File dbFile = new File(customDbPath);
-        return dbFile.exists();
-    }
-
-    public void openDataBase() {
-        try {
-            createDataBase(); // DB가 없으면 생성 (복사)
-            db = SQLiteDatabase.openDatabase(customDbPath, null, SQLiteDatabase.OPEN_READWRITE);
-        } catch (IOException e) {
-            Log.e("DatabaseHelper", "Unable to open database", e);
-        }
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        // 테이블 생성 (필요한 경우)
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // 데이터베이스 업그레이드 (필요한 경우)
-    }
-
-    // 테이블 이름 조회하여 List<String>으로 반환
-    public List<String> getTableNames() {
-        List<String> tableNames = new ArrayList<>();
-        if (db == null || !db.isOpen()) {
-            openDataBase(); // DB가 닫혀있으면 다시 연다.
-        }
-        Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table';", null);
-        if (cursor.moveToFirst()) {
-            do {
-                String tableName = cursor.getString(0);
-                tableNames.add(tableName);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return tableNames;
-    }
-
-    @Override
-    public synchronized void close() {
-        if (db != null && db.isOpen()) {
-            db.close();
-            Log.d("DatabaseHelper", "Database connection closed");
-        }
-        super.close();
-    }
-}*/

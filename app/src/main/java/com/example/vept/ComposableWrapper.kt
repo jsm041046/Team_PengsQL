@@ -1,13 +1,20 @@
 package com.example.vept
 
 import androidx.compose.ui.platform.ComposeView
+import com.example.vept.pl.L4.PlannerMainDesign
+import com.example.vept.pl.L4.PlannerMainViewModel
 
-// Java에서 호출할 수 있도록 `@JvmStatic` 추가
 object ComposableWrapper {
     @JvmStatic
     fun setComposableContent(composeView: ComposeView, viewModel: MainDesignViewModel) {
         composeView.setContent {
             MainDesign(viewModel)
+        }
+    }
+    @JvmStatic
+    fun setComposableContent(composeView: ComposeView, viewModel: PlannerMainViewModel) {
+        composeView.setContent {
+            PlannerMainDesign(viewModel)
         }
     }
 }

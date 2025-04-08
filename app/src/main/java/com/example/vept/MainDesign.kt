@@ -32,6 +32,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.vept.ed.L4.EditorMainActivity
+import com.example.vept.pl.L4.PlannerMainActivity
+import com.example.vept.pl.L4.PlannerMainDesign
 import com.example.vept.sysops.L1.FileExplorer
 
 
@@ -129,10 +131,11 @@ fun TmpDesignButton(
     viewModel: MainDesignViewModel,
     name: String // button nameD
 ){
+    val context = LocalContext.current
     Button(
         onClick = {
-
-
+                val intent = Intent(context, PlannerMainActivity::class.java)
+                context.startActivity(intent)
             }
     ) {
         Text(

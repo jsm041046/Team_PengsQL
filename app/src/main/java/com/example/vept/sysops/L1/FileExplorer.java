@@ -1,6 +1,5 @@
 package com.example.vept.sysops.L1;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -10,11 +9,8 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -181,27 +177,4 @@ public class FileExplorer {
         }
     }
 
-    public static ActivityResultLauncher<Intent> createFilePickerLauncher(AppCompatActivity activity, FileExplorer fileExplorer) {
-        return activity.registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            Uri uri = data.getData();
-                            if (uri != null) {
-                                fileExplorer.selectedFileUri = uri; // Uri 저장
-                                Log.d("FileExplorer", "Selected file path: " + uri.toString());
-
-                                // 실제 파일명 가져오기
-                                String fileName = getRealFileName(activity, uri);
-                                Log.d("FileExplorer", "Selected file is: " + fileName);
-
-                                fileExplorer.fileClassify(); // 파일 분류 함수 호출
-                            }
-                        }
-                    }
-                }
-        );
-    }
 }
